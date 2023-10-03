@@ -21,4 +21,15 @@ class RouterTest extends TestCase
 
         $this->assertEquals('users', $result);
     }
+
+    public function testValidateANoRouteFound()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('No route found');
+
+        $_SERVER['REQUEST_URI'] = '/user';
+
+        $router = new Router();
+        $router->run();
+    }
 }

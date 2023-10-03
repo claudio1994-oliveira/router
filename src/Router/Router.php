@@ -18,6 +18,9 @@ class Router
 
     public function run()
     {
+        if (!array_key_exists($this->uriServer, $this->routeCollection)) {
+            throw new \Exception('No route found');
+        }
         return $this->routeCollection[$this->uriServer]();
     }
 }
