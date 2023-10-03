@@ -50,7 +50,7 @@ class Router
             return $route();
         }
 
-        return $this->controllerResolver($route);
+        return $this->controllerResolver($route, $wildcardRouter->getParameters());
     }
 
     private function controllerResolver($route, $parameters = [])

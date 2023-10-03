@@ -89,7 +89,7 @@ class RouterTest extends TestCase
         $router->run();
     }
 
-    public function testRouterWithDynamicParameters()
+    public function testCallableRouterWithDynamicParameters()
     {
         $_SERVER['REQUEST_URI'] = '/products/1';
 
@@ -98,6 +98,19 @@ class RouterTest extends TestCase
         $router->addRoute('/products/{id}', function ($id) {
             return "Rota com parâmetro dinâmico {$id}";
         });
+
+        $result = $router->run();
+
+        $this->assertEquals('Rota com parâmetro dinâmico 1', $result);
+    }
+
+    public function testStringRouterWithDynamicParameters()
+    {
+        $_SERVER['REQUEST_URI'] = '/products/1';
+
+        $router = new Router();
+
+        $router->addRoute('/products/{id}', '\\Claud\\Router\\Tests\\Controller\\ProductController@show');
 
         $result = $router->run();
 

@@ -10,4 +10,9 @@ class ProductController
     {
         return 'ProductController@index';
     }
+
+    public function show($id)
+    {
+        return 'Rota com parâmetro dinâmico ' . $id;
+    }
 };
