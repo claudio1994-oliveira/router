@@ -7,13 +7,22 @@ class Router
     private $uriServer;
     private $routeCollection = [];
 
+    private $prefix = '';
+
     public function __construct()
     {
         $this->uriServer = $_SERVER['REQUEST_URI'];
     }
     public function addRoute($uri, $callback)
     {
-        return $this->routeCollection[$uri] = $callback;
+        return $this->routeCollection[$this->prefix . $uri] = $callback;
+    }
+
+    public function prefix($prefix, $routeGroup)
+    {
+        $this->prefix = $prefix;
+
+        $routeGroup($this);
     }
 
     public function run()

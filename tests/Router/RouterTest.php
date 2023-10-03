@@ -103,4 +103,25 @@ class RouterTest extends TestCase
 
         $this->assertEquals('Rota com parâmetro dinâmico 1', $result);
     }
+
+    public function testRouterWithPrefix()
+    {
+        $_SERVER['REQUEST_URI'] = '/users/edit/1';
+
+        $router = new Router();
+
+        $router->prefix('/users', function (Router $router) {
+            $router->addRoute('/edit/{id}', function ($id) {
+                return "Rota com prefixo e parâmetro dinâmico {$id}";
+            });
+
+            $router->addRoute('/update/{id}', function ($id) {
+                return "Rota com prefixo e parâmetro dinâmico {$id}";
+            });
+        });
+
+        $result = $router->run();
+
+        $this->assertEquals('Rota com prefixo e parâmetro dinâmico 1', $result);
+    }
 }
