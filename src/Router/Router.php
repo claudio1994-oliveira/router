@@ -42,7 +42,10 @@ class Router
 
         $action = $route[1];
 
-        $controller = 'Claud\\Router\\Tests\\Controller\\' . $controller;
+
+        if (!method_exists(new $controller, $action)) {
+            throw new \BadMethodCallException('Method not found');
+        }
 
         return call_user_func_array([new $controller, $action], []);
     }

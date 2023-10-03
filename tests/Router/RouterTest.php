@@ -40,7 +40,7 @@ class RouterTest extends TestCase
 
         $router = new Router();
 
-        $router->addRoute('/products', 'ProductController@index');
+        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\ProductController@index');
 
         $result = $router->run();
 
@@ -56,7 +56,21 @@ class RouterTest extends TestCase
 
         $router = new Router();
 
-        $router->addRoute('/products', 'ProductController');
+        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\ProductController');
+
+        $router->run();
+    }
+
+    public function testThrowExceptionWhenMethodDoesNotExistInAController()
+    {
+        $this->expectException(\BadMethodCallException::class);
+        $this->expectExceptionMessage('Method not found');
+
+        $_SERVER['REQUEST_URI'] = '/products';
+
+        $router = new Router();
+
+        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\ProductController@create');
 
         $router->run();
     }
