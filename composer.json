@@ -1,0 +1,23 @@
+{
+    "name": "claud/router",
+    "require-dev": {
+        "phpunit/phpunit": "^10.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Claud\\Router\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Claud\\Router\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Cláudio Oliveira",
+            "email": "franciscoclaudiooliveira@gmail.com"
+        }
+    ],
+    "require": {}
+}
