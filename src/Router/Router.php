@@ -33,9 +33,13 @@ class Router
 
     private function controllerResolver($route)
     {
+        if (!strpos($route, '@')) {
+            throw new \InvalidArgumentException('Invalid call format');
+        }
         $route = explode('@', $route);
 
         $controller = $route[0];
+
         $action = $route[1];
 
         $controller = 'Claud\\Router\\Tests\\Controller\\' . $controller;

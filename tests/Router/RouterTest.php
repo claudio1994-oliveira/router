@@ -3,6 +3,7 @@
 namespace Claud\Router\Test\Router;
 
 use Claud\Router\Router\Router;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
@@ -44,5 +45,19 @@ class RouterTest extends TestCase
         $result = $router->run();
 
         $this->assertEquals('ProductController@index', $result);
+    }
+
+    public function testAWrongFormatToCallControllerAsASecondParameterOfTheOurRouter()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid call format');
+
+        $_SERVER['REQUEST_URI'] = '/products';
+
+        $router = new Router();
+
+        $router->addRoute('/products', 'ProductController');
+
+        $router->run();
     }
 }
