@@ -1,8 +1,8 @@
 <?php
 
-namespace Claud\Router\Test\Router;
+namespace Router\Test\Router;
 
-use Claud\Router\Router\Router;
+use Router\Router\Router;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -40,7 +40,7 @@ class RouterTest extends TestCase
 
         $router = new Router();
 
-        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\ProductController@index');
+        $router->addRoute('/products', '\\Router\\Tests\\Controller\\ProductController@index');
 
         $result = $router->run();
 
@@ -56,7 +56,7 @@ class RouterTest extends TestCase
 
         $router = new Router();
 
-        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\ProductController');
+        $router->addRoute('/products', '\\Router\\Tests\\Controller\\ProductController');
 
         $router->run();
     }
@@ -70,7 +70,7 @@ class RouterTest extends TestCase
 
         $router = new Router();
 
-        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\UserController@create');
+        $router->addRoute('/products', '\\Router\\Tests\\Controller\\UserController@create');
 
         $router->run();
     }
@@ -84,7 +84,7 @@ class RouterTest extends TestCase
 
         $router = new Router();
 
-        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\ProductController@create');
+        $router->addRoute('/products', '\\Router\\Tests\\Controller\\ProductController@create');
 
         $router->run();
     }
@@ -110,7 +110,7 @@ class RouterTest extends TestCase
 
         $router = new Router();
 
-        $router->addRoute('/products/{id}', '\\Claud\\Router\\Tests\\Controller\\ProductController@show');
+        $router->addRoute('/products/{id}', '\\Router\\Tests\\Controller\\ProductController@show');
 
         $result = $router->run();
 

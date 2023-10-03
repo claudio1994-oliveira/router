@@ -1,6 +1,6 @@
 <?php
 
-namespace Claud\Router\Tests\Controller;
+namespace Router\Tests\Controller;
 
 
 class ProductController

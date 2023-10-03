@@ -1,6 +1,6 @@
 <?php
 
-namespace Claud\Router\Router;
+namespace Router\Router;
 
 class WildcardRouter
 {
