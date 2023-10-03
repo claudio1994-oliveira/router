@@ -2,6 +2,7 @@
     "name": "claud/router",
     "description": "Package to create routes in PHP",
     "minimum-stability": "dev",
+    "license": "MIT",
     "require-dev": {
         "phpunit/phpunit": "^10.3"
     },
