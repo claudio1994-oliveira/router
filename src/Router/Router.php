@@ -15,7 +15,9 @@ class Router
     }
     public function addRoute($uri, $callback)
     {
-        return $this->routeCollection[$this->prefix . $uri] = $callback;
+        $uri = ltrim($uri, '/');
+        $prefix = $this->prefix ? '/' . ltrim($this->prefix, '/') : '';
+        return $this->routeCollection[$prefix .  '/' . $uri] = $callback;
     }
 
     public function prefix($prefix, $routeGroup)
