@@ -32,4 +32,17 @@ class RouterTest extends TestCase
         $router = new Router();
         $router->run();
     }
+
+    public function testRouteWithAControllerAssociated()
+    {
+        $_SERVER['REQUEST_URI'] = '/products';
+
+        $router = new Router();
+
+        $router->addRoute('/products', 'ProductController@index');
+
+        $result = $router->run();
+
+        $this->assertEquals('ProductController@index', $result);
+    }
 }
