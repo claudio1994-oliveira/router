@@ -61,6 +61,20 @@ class RouterTest extends TestCase
         $router->run();
     }
 
+    public function testThrowExceptionWhenClassDoesNotExists()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Class not found');
+
+        $_SERVER['REQUEST_URI'] = '/products';
+
+        $router = new Router();
+
+        $router->addRoute('/products', '\\Claud\\Router\\Tests\\Controller\\UserController@create');
+
+        $router->run();
+    }
+
     public function testThrowExceptionWhenMethodDoesNotExistInAController()
     {
         $this->expectException(\BadMethodCallException::class);

@@ -42,6 +42,10 @@ class Router
 
         $action = $route[1];
 
+        if (!class_exists($controller)) {
+            throw new \InvalidArgumentException('Class not found');
+        }
+
 
         if (!method_exists(new $controller, $action)) {
             throw new \BadMethodCallException('Method not found');
