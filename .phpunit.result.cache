@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"Claud\\Router\\Test\\Router\\RouterTest::testRouter":0.004}}
+{"version":1,"defects":{"Claud\\Router\\Test\\Router\\RouterTest::testRouterSetRoutes":8},"times":{"Claud\\Router\\Test\\Router\\RouterTest::testRouter":0.004,"Claud\\Router\\Test\\Router\\RouterTest::testRouterSetRoutes":0.005}}

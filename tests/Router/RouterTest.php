@@ -2,12 +2,23 @@
 
 namespace Claud\Router\Test\Router;
 
+use Claud\Router\Router\Router;
 use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
 {
-    public function testRouter()
+    public function testRouterSetRoutes()
     {
-        $this->assertTrue(true);
+        $_SERVER['REQUEST_URI'] = '/users';
+
+        $router = new Router();
+
+        $router->addRoute('/users', function () {
+            return 'users';
+        });
+
+        $result = $router->run();
+
+        $this->assertEquals('users', $result);
     }
 }
