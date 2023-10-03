@@ -18,20 +18,31 @@ class Router
 
     public function run()
     {
+        $wildcardRouter = new WildcardRouter();
+        $wildcardRouter->resolveRoute($this->uriServer, $this->routeCollection);
+
+
         if (!array_key_exists($this->uriServer, $this->routeCollection)) {
             throw new \Exception('No route found');
         }
 
+
         $route = $this->routeCollection[$this->uriServer];
 
         if (is_callable($route)) {
-            return $this->routeCollection[$this->uriServer]();
+            $parameters = $wildcardRouter->getParameters();
+
+            if (!empty($parameters)) {
+                return $route($parameters[0]);
+            }
+
+            return $route();
         }
 
         return $this->controllerResolver($route);
     }
 
-    private function controllerResolver($route)
+    private function controllerResolver($route, $parameters = [])
     {
         if (!strpos($route, '@')) {
             throw new \InvalidArgumentException('Invalid call format');
@@ -51,6 +62,6 @@ class Router
             throw new \BadMethodCallException('Method not found');
         }
 
-        return call_user_func_array([new $controller, $action], []);
+        return call_user_func_array([new $controller, $action], $parameters);
     }
 }

@@ -88,4 +88,19 @@ class RouterTest extends TestCase
 
         $router->run();
     }
+
+    public function testRouterWithDynamicParameters()
+    {
+        $_SERVER['REQUEST_URI'] = '/products/1';
+
+        $router = new Router();
+
+        $router->addRoute('/products/{id}', function ($id) {
+            return "Rota com parâmetro dinâmico {$id}";
+        });
+
+        $result = $router->run();
+
+        $this->assertEquals('Rota com parâmetro dinâmico 1', $result);
+    }
 }
