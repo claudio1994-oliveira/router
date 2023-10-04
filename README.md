@@ -25,7 +25,7 @@ Aqui está um exemplo de como você pode usar este componente em seu projeto PHP
 
 require_once 'vendor/autoload.php';
 
-use Router\Router;
+use Router\Router\Router;
 
 $router = new Router();
 
