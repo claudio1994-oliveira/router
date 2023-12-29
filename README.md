@@ -1,5 +1,10 @@
 # Componente Router
 
+[![Latest Stable Version](https://poser.pugx.org/claud/router/v)](//packagist.org/packages/claud/router)
+[![Total Downloads](https://poser.pugx.org/claud/router/downloads)](//packagist.org/packages/claud/router)
+[![Latest Unstable Version](https://poser.pugx.org/claud/router/v/unstable)](//packagist.org/packages/claud/router)
+[![License](https://poser.pugx.org/claud/router/license)](//packagist.org/packages/claud/router)
+
 O **Componente Router** é uma ferramenta simples e flexível para gerenciar rotas em aplicativos PHP. Este componente permite que você defina rotas e associe funções ou métodos de controladores a elas, facilitando a criação de aplicativos da web com URLs amigáveis.
 
 ## Recursos
