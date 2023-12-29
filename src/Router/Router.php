@@ -13,12 +13,17 @@ class Router
     {
         $this->uriServer = $_SERVER['REQUEST_URI'];
     }
-    public function addRoute($uri, $callback)
+    public function addRoute($uri, $callback, $method = 'GET')
     {
+        if (strtoupper($method) != $_SERVER['REQUEST_METHOD']) {
+            throw new \Exception('Method not allowed');
+        }
+
         $uri = ltrim($uri, '/');
         $prefix = $this->prefix ? '/' . ltrim($this->prefix, '/') : '';
         return $this->routeCollection[$prefix .  '/' . $uri] = $callback;
     }
+
 
     public function prefix($prefix, $routeGroup)
     {

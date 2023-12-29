@@ -8,19 +8,37 @@ use PHPUnit\Framework\TestCase;
 
 class RouterTest extends TestCase
 {
+
     public function testRouterSetRoutes()
     {
         $_SERVER['REQUEST_URI'] = '/users';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
 
         $router = new Router();
 
         $router->addRoute('/users', function () {
             return 'users';
-        });
+        }, 'get');
 
         $result = $router->run();
 
         $this->assertEquals('users', $result);
+    }
+
+    public function testValidateHTTPMethod()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Method not allowed');
+
+        $_SERVER['REQUEST_URI'] = '/user';
+
+
+        $router = new Router();
+        $router->addRoute('/user', function () {
+            return 'users';
+        }, 'post');
+
+        $router->run();
     }
 
     public function testValidateANoRouteFound()
@@ -29,6 +47,7 @@ class RouterTest extends TestCase
         $this->expectExceptionMessage('No route found');
 
         $_SERVER['REQUEST_URI'] = '/user';
+
 
         $router = new Router();
         $router->run();

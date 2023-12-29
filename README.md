@@ -37,6 +37,7 @@ $router = new Router();
 $router->addRoute('/', function () {
     echo 'Bem-vindo à página inicial!';
 });
+
 //Para que o componente router encontre o controller, passe o caminho completo
 $router->addRoute('/perfil/{id}', 'App\Controller\PerfilController@show');
 
@@ -49,6 +50,22 @@ $router->prefix('/users', function(Router $router) {
         return "Rota com prefixo e parâmetro dinâmico {$id}";
     });
 });
+
+$router->run();
+```
+
+Por padrão, o método http usado será o GET mas você pode alternar o método passando um terceiro parâmetro (string $method) na função addRoute()
+
+```php
+<?php
+
+require_once 'vendor/autoload.php';
+
+use Router\Router\Router;
+
+$router = new Router();
+
+$router->addRoute('/', 'App\Controller\PerfilController@store', 'POST');
 
 $router->run();
 ```
