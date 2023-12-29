@@ -32,8 +32,8 @@ $router = new Router();
 $router->addRoute('/', function () {
     echo 'Bem-vindo à página inicial!';
 });
-
-$router->addRoute('/perfil/{id}', 'PerfilController@show');
+//Para que o componente router encontre o controller, passe o caminho completo
+$router->addRoute('/perfil/{id}', 'App\Controller\PerfilController@show');
 
 $router->prefix('/users', function(Router $router) {
     $router->addRoute('/edit/{id}', function ($id) {
