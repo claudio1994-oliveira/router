@@ -60,10 +60,11 @@ class Router
 
     private function controllerResolver($route, $parameters = [])
     {
-        if (!strpos($route, '@')) {
+
+
+        if (!is_array($route)) {
             throw new \InvalidArgumentException('Invalid call format');
         }
-        $route = explode('@', $route);
 
         $controller = $route[0];
 
