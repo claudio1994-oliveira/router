@@ -15,13 +15,19 @@ class Router
     }
     public function addRoute($uri, $callback, $method = 'GET')
     {
-        if (strtoupper($method) != $_SERVER['REQUEST_METHOD']) {
-            throw new \Exception('Method not allowed');
+
+        $method = strtoupper($method);
+
+        var_dump($method);
+        if ($method == 'GET' || $method == 'POST') {
+
+            $uri = ltrim($uri, '/');
+            $prefix = $this->prefix ? '/' . ltrim($this->prefix, '/') : '';
+            return $this->routeCollection[$prefix .  '/' . $uri] = $callback;
         }
 
-        $uri = ltrim($uri, '/');
-        $prefix = $this->prefix ? '/' . ltrim($this->prefix, '/') : '';
-        return $this->routeCollection[$prefix .  '/' . $uri] = $callback;
+
+        throw new \Exception('Method not allowed');
     }
 
 

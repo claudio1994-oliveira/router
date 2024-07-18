@@ -18,7 +18,7 @@ class RouterTest extends TestCase
 
         $router->addRoute('/users', function () {
             return 'users';
-        }, 'get');
+        }, 'GET');
 
         $result = $router->run();
 
@@ -36,7 +36,7 @@ class RouterTest extends TestCase
         $router = new Router();
         $router->addRoute('/user', function () {
             return 'users';
-        }, 'post');
+        }, 'delete');
 
         $router->run();
     }
@@ -62,8 +62,6 @@ class RouterTest extends TestCase
         $router->addRoute('/products', ['\\Router\\Tests\\Controller\\ProductController', 'index']);
 
         $result = $router->run();
-
-        var_dump($result);
 
         $this->assertEquals('ProductController@index', $result);
     }
