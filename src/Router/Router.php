@@ -18,7 +18,7 @@ class Router
 
         $method = strtoupper($method);
 
-        var_dump($method);
+
         if ($method == 'GET' || $method == 'POST') {
 
             $uri = ltrim($uri, '/');
