@@ -2,10 +2,14 @@
 
 namespace Router\Router;
 
+use Router\Http\Request;
+use Router\Contracts\MiddlewareInterface;
+
 class Router
 {
     private $uriServer;
     private $routeCollection = [];
+    private $globalMiddlewares = [];
 
     private $prefix = '';
 
@@ -13,7 +17,7 @@ class Router
     {
         $this->uriServer = $_SERVER['REQUEST_URI'];
     }
-    public function addRoute($uri, $callback, $method = 'GET')
+    public function addRoute($uri, $callback, $method = 'GET', $middlewares = [])
     {
 
         $method = strtoupper($method);
@@ -21,9 +25,21 @@ class Router
 
         if ($method == 'GET' || $method == 'POST') {
 
+            $middlewareList = [];
+
+            foreach ($middlewares as $middleware) {
+                if (!is_callable($middleware)) {
+                    throw new \InvalidArgumentException('Middleware is not callable');
+                }
+
+                $middlewareList[] = $middleware;
+            }
+
+
             $uri = ltrim($uri, '/');
             $prefix = $this->prefix ? '/' . ltrim($this->prefix, '/') : '';
-            return $this->routeCollection[$prefix .  '/' . $uri] = $callback;
+
+            return $this->routeCollection[$prefix .  '/' . $uri] = ['callback' => $callback, 'method' => $method, 'middlewares' => $middlewareList];
         }
 
 
@@ -38,8 +54,14 @@ class Router
         $routeGroup($this);
     }
 
+    public function addMiddleware($middleware)
+    {
+        $this->globalMiddlewares[] = $middleware;
+    }
+
     public function run()
     {
+
         $wildcardRouter = new WildcardRouter();
         $wildcardRouter->resolveRoute($this->uriServer, $this->routeCollection);
 
@@ -51,22 +73,48 @@ class Router
 
         $route = $this->routeCollection[$this->uriServer];
 
-        if (is_callable($route)) {
-            $parameters = $wildcardRouter->getParameters();
+        $middlewares = array_merge($this->globalMiddlewares, $route['middlewares']);
 
-            if (!empty($parameters)) {
-                return $route($parameters[0]);
+        return $this->handleMiddleware(
+            new Request(
+                $_SERVER['REQUEST_METHOD'],
+                $this->uriServer,
+                getallheaders(),
+                file_get_contents('php://input'),
+                $_POST,
+                $_GET,
+                $_SERVER,
+                $_FILES
+            ),
+            $middlewares,
+            function ($request) use ($route, $wildcardRouter) {
+                if (is_callable($route['callback'])) {
+                    $parameters = $wildcardRouter->getParameters();
+                    return call_user_func_array($route['callback'], $parameters);
+                }
+                return $this->controllerResolver($route['callback'], $wildcardRouter->getParameters());
             }
+        );
+    }
 
-            return $route();
+    private function handleMiddleware(Request $request, $middlewares, callable $callback)
+    {
+        $middleware = array_shift($middlewares);
+
+        if ($middleware) {
+            $middlewareInstance = new $middleware();
+            if ($middlewareInstance instanceof MiddlewareInterface) {
+                return $middlewareInstance->handle($request, function ($request) use ($middlewares, $callback) {
+                    return $this->handleMiddleware($request, $middlewares, $callback);
+                });
+            }
         }
 
-        return $this->controllerResolver($route, $wildcardRouter->getParameters());
+        return call_user_func($callback, $request);
     }
 
     private function controllerResolver($route, $parameters = [])
     {
-
 
         if (!is_array($route)) {
             throw new \InvalidArgumentException('Invalid call format');
