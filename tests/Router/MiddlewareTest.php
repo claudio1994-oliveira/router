@@ -5,7 +5,6 @@
 namespace Router\Test\Router;
 
 use Router\Router\Router;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Router\Contracts\MiddlewareInterface;
 use Router\Tests\Middleware\LocalMiddleware;

@@ -12,6 +12,8 @@ O **Componente Router** é uma ferramenta simples e flexível para gerenciar rot
 - Fácil definição de rotas
 - Suporte a rotas com parâmetros
 - Funções ou métodos de controladores associados a rotas
+- Suporte para Request e Response
+- Suporte a Middlewares globais e locais em cada rota
 
 ## Instalação
 
@@ -39,7 +41,7 @@ $router->addRoute('/', function () {
 });
 
 //Para que o componente router encontre o controller, passe o caminho completo
-$router->addRoute('/perfil/{id}', 'App\Controller\PerfilController@show');
+$router->addRoute('/perfil/{id}', [App\Controller\PerfilController::class,'show']);
 
 $router->prefix('/users', function(Router $router) {
     $router->addRoute('/edit/{id}', function ($id) {
@@ -65,7 +67,52 @@ use Router\Router\Router;
 
 $router = new Router();
 
-$router->addRoute('/', 'App\Controller\PerfilController@store', 'POST');
+$router->addRoute('/', [App\Controller\PerfilControlle::class, 'store'], 'POST');
+
+$router->run();
+```
+
+Você poderá usar Middlewares para interceptar suas requisições. Para criar os seus middlewares, basta implementar a interface MiddlewareInterface do mesmo pacote.
+
+Além do contrato da interface, provemos suas classes de Request e Response para suas implementações.
+
+```php
+<?php
+
+require_once 'vendor/autoload.php';
+
+use Router\Router\Router;
+use Router\Contracts\MiddlewareInterface;
+
+class GlobalMiddleware implements MiddlewareInterface
+{
+    public function handle(Request $request, callable $next)
+    {
+        if (!isset($_SESSION['user'])) {
+
+            return 'not authorized';
+        }
+
+        return $next($request);
+    }
+}
+
+class LocalMiddleware implements MiddlewareInterface
+{
+    public function handle(Request $request, callable $next)
+    {
+
+        return $next($request);
+    }
+}
+
+$router = new Router();
+
+//Para adicionar globalmente
+$router->addMiddleware(new GlobalMiddleware());
+
+// Para adicionar especifico para a rota
+$router->addRoute('/', [App\Controller\PerfilControlle::class, 'store'], 'POST', [new LocalMiddlware()]);
 
 $router->run();
 ```
