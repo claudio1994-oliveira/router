@@ -22,15 +22,11 @@ class Router
 
         $method = strtoupper($method);
 
-
         if ($method == 'GET' || $method == 'POST') {
 
             $middlewareList = [];
 
             foreach ($middlewares as $middleware) {
-                if (!is_callable($middleware)) {
-                    throw new \InvalidArgumentException('Middleware is not callable');
-                }
 
                 $middlewareList[] = $middleware;
             }
@@ -61,15 +57,14 @@ class Router
 
     public function run()
     {
-
         $wildcardRouter = new WildcardRouter();
         $wildcardRouter->resolveRoute($this->uriServer, $this->routeCollection);
 
 
         if (!array_key_exists($this->uriServer, $this->routeCollection)) {
+
             throw new \Exception('No route found');
         }
-
 
         $route = $this->routeCollection[$this->uriServer];
 
@@ -103,10 +98,15 @@ class Router
 
         if ($middleware) {
             $middlewareInstance = new $middleware();
+
             if ($middlewareInstance instanceof MiddlewareInterface) {
-                return $middlewareInstance->handle($request, function ($request) use ($middlewares, $callback) {
-                    return $this->handleMiddleware($request, $middlewares, $callback);
-                });
+
+                return $middlewareInstance
+                    ->handle($request, function ($request) use ($middlewares, $callback) {
+                        return $this->handleMiddleware($request, $middlewares, $callback);
+                    });
+            } else {
+                throw new \InvalidArgumentException('The provided object must implement MiddliwareInterface.');
             }
         }
 
@@ -134,5 +134,10 @@ class Router
         }
 
         return call_user_func_array([new $controller, $action], $parameters);
+    }
+
+    public function getMiddlewares()
+    {
+        return $this->globalMiddlewares;
     }
 }
