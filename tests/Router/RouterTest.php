@@ -18,7 +18,12 @@ class RouterTest extends TestCase
 
         $router->addRoute('/users', function () {
             return 'users';
-        }, 'GET');
+        });
+
+        $router->addRoute('/users', function () {
+            return 'users POST';
+        }, 'POST');
+
 
         $result = $router->run();
 
@@ -31,6 +36,7 @@ class RouterTest extends TestCase
         $this->expectExceptionMessage('Method not allowed');
 
         $_SERVER['REQUEST_URI'] = '/user';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
 
 
         $router = new Router();
@@ -111,6 +117,7 @@ class RouterTest extends TestCase
     public function testCallableRouterWithDynamicParameters()
     {
         $_SERVER['REQUEST_URI'] = '/products/1';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
 
         $router = new Router();
 

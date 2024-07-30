@@ -2,6 +2,7 @@
 
 namespace Router\Router;
 
+use InvalidArgumentException;
 use Router\Http\Request;
 use Router\Contracts\MiddlewareInterface;
 
@@ -17,9 +18,9 @@ class Router
     {
         $this->uriServer = $_SERVER['REQUEST_URI'];
     }
-    public function addRoute($uri, $callback, $method = 'GET', $middlewares = [])
-    {
 
+    public function addRoute($uri, $callback, $method = 'GET', $middlewares = []): array
+    {
         $method = strtoupper($method);
 
         if ($method == 'GET' || $method == 'POST') {
@@ -31,11 +32,10 @@ class Router
                 $middlewareList[] = $middleware;
             }
 
-
             $uri = ltrim($uri, '/');
             $prefix = $this->prefix ? '/' . ltrim($this->prefix, '/') : '';
 
-            return $this->routeCollection[$prefix .  '/' . $uri] = ['callback' => $callback, 'method' => $method, 'middlewares' => $middlewareList];
+            return $this->routeCollection[$prefix . '/' . $uri . '|' . $method] = ['callback' => $callback, 'method' => $method, 'middlewares' => $middlewareList];
         }
 
 
@@ -43,30 +43,30 @@ class Router
     }
 
 
-    public function prefix($prefix, $routeGroup)
+    public function prefix($prefix, $routeGroup): void
     {
         $this->prefix = $prefix;
 
         $routeGroup($this);
     }
 
-    public function addMiddleware($middleware)
+    public function addMiddleware($middleware): void
     {
         $this->globalMiddlewares[] = $middleware;
     }
 
     public function run()
     {
+        $method = $_SERVER['REQUEST_METHOD'];
         $wildcardRouter = new WildcardRouter();
-        $wildcardRouter->resolveRoute($this->uriServer, $this->routeCollection);
+        $wildcardRouter->resolveRoute($this->uriServer, $this->routeCollection, $method);
 
 
-        if (!array_key_exists($this->uriServer, $this->routeCollection)) {
-
+        if (!array_key_exists($this->uriServer . '|' . $method, $this->routeCollection)) {
             throw new \Exception('No route found');
         }
 
-        $route = $this->routeCollection[$this->uriServer];
+        $route = $this->routeCollection[$this->uriServer . '|' . $method];
 
         $middlewares = array_merge($this->globalMiddlewares, $route['middlewares']);
 
@@ -136,7 +136,7 @@ class Router
         return call_user_func_array([new $controller, $action], $parameters);
     }
 
-    public function getMiddlewares()
+    public function getMiddlewares(): array
     {
         return $this->globalMiddlewares;
     }

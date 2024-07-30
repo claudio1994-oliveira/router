@@ -4,36 +4,38 @@ namespace Router\Router;
 
 class WildcardRouter
 {
-    private $parameters = [];
+    private array $parameters = [];
 
-    public function resolveRoute($uri, &$routeCollection)
+    public function resolveRoute($uri, &$routeCollection, $method): void
     {
         $keysRouteCollection = array_keys($routeCollection);
-        $routeWithParamaters = [];
+
+        $routeWithParameters = [];
 
         foreach ($keysRouteCollection as $route) {
             if (preg_match('/{(\w+?)\}/', $route)) {
-                $routeWithParamaters[] = $route;
+                $routeWithParameters[] = $route;
             }
         }
 
-        foreach ($routeWithParamaters as $route) {
-            $routeWithParamater = preg_replace('/\/{(\w+?)\}/', '', $route);
+        foreach ($routeWithParameters as $route) {
+            $routeWithParameter = preg_replace('/\/{(\w+?)\}/', '', $route);
+
             $uriWithParameter = preg_replace('/\/[0-9]+$/', '', $uri);
 
-            if ($routeWithParamater === $uriWithParameter) {
-                $routeCollection[$uri] = $routeCollection[$route];
+            if ($routeWithParameter === $uriWithParameter . '|' . $method) {
+                $routeCollection[$uri . '|' . $method] = $routeCollection[$route];
                 $this->parameters = $this->resolveParameters($uri);
             }
         }
     }
 
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    private function resolveParameters($uri)
+    private function resolveParameters($uri): array
     {
         $parameters = [];
 

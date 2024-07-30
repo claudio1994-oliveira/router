@@ -16,6 +16,7 @@ class MiddlewareTest extends TestCase
     public function testMiddlewareHasTypeMiddlewareInterface()
     {
         $_SERVER['REQUEST_URI'] = '/test';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = new Router();
         $middleware = new GlobalMiddleware();
 
